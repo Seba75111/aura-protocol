@@ -62,7 +62,20 @@ Aura Protocol 是一个致力于提供**安全、高速、自动化、傻瓜式*
     前往 **My Profile** (右上角头像) -> **API Tokens**。点击 **`Create Token`**。
     查看 Global API Key
 *   **API Token （GitHub）：**
-    永久和最低权限
+    前往 GitHub Tokens 设置页面:
+       访问 https://github.com/settings/tokens
+    生成一个全新的、权限完美的令牌:
+       点击 "Generate new token" -> "Generate new token (classic)"
+       Note (备注): 给它起个清晰的名字，比如 Aura-Protocol
+       Expiration (有效期): 为了方便，可以选择 "No expiration"
+       Select scopes (选择权限): 【至关重要】 请务必、务必勾选以下三个复选框：
+          ✅ repo (完全控制仓库，包括私有仓库)
+          ✅ workflow (修改和运行 Actions 工作流)
+          ✅ admin:org -> read:org (读取组织信息，这是解决我们认证失败的关键)
+    生成并复制令牌:
+       点击页面最下方的 "Generate token"。
+       GitHub 只会显示这一次新令牌，请立刻将它复制下来，存放在一个安全的地方。
+    
 
 ### 2. 下载并运行安装脚本 (在 VPS 上)
 
