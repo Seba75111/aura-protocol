@@ -88,7 +88,7 @@ EOF
 
     info "检查并安装 Cloudflare Tunnel 客户端 (cloudflared)..."
     if ! command -v "cloudflared" &> /dev/null; then
-        LATEST_URL=$(curl -s "https://api.github.com/repos/cloudflare/cloudflared/releases/latest" | jq -r ".assets[] | select(.name | contains(\"linux-${ARCH}.deb\")) | .browser_download_url")
+        LATEST_URL=$(curl -s "https://api.github.com/repos/cloudflare/cloudflared/releases/latest" | jq -r ".assets[] | select((.name | contains(\"linux-${ARCH}.deb\")) and (.name | contains(\"fips\") | not)) | .browser_download_url")
         # 【调试模式的代码块】
         echo -e "${YELLOW}[调试]${NC} 获取到的 Cloudflared 下载地址: ${LATEST_URL}"
         if [ -z "$LATEST_URL" ]; then
