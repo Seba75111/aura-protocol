@@ -41,7 +41,7 @@ Aura Protocol 是一个致力于提供**安全、高速、自动化、傻瓜式*
     `aura-server` 是用 Go 语言开发的代理核心，其源代码不公开是为了**防止审查机构进行逆向分析**，从而保护项目的长期可用性。您下载和运行的是我们提供经过 `Garble` 工具混淆的二进制文件，它极大增加了逆向分析的难度。
 
 3.  **实时系统监控 (`htop`) 方便验证：**
-    安装完成后，您可以随时通过 SSH 登录您的 VPS，运行 `htop` 命令来实时查看服务器的 CPU、内存、网络和进程列表。您可以清晰地看到 `aura-server` 和 `cloudflared` 的资源占用情况，并确保没有其他异常或高资源占用的进程在运行。这为您提供了持续验证项目健康度的能力。
+    安装完成后，您可以随时通过 SSH 登录您的 VPS，运行 `htop` 命令来实时查看服务器的 CPU、内存、网络和进程列表。您可以清晰地看到资源占用情况，并确保没有其他异常或高资源占用的进程在运行。这为您提供了持续验证项目健康度的能力。
 
 ---
 
@@ -78,12 +78,12 @@ bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/
 
 # 接下来你会看到的提示：
 
-**1.脚本应该正停在 [询问] 请输入你的隧道域名 (例如: aura.yourdomain.com): 这个地方等待您的输入**
-   输入隧道域名：例如 tunnel.aura.com (假设您的主域名是 aura.com)
+**1.脚本应该正停在 [询问] 请输入你的隧道域名 (例如: aura.yourdomain.com ): 这个地方等待您的输入**
+   输入隧道域名：例如 tunnel.aura.com (假设您的主域名是 aura.com )
    请在终端中准确输入这个域名，然后按 Enter
    
 **2.要求输入 WebSocket 路径**
-   可以直接按 Enter 使用默认的 /ws，或者输入您喜欢的路径（例如 /my-secret-path）
+   可以直接按 Enter 使用默认的 /ws ，或者输入您喜欢的路径（例如 /my-aura-path）
 
 **3.自动生成端口和 UUID**
 
@@ -91,18 +91,18 @@ bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/
    提示进行 tunnel login
    复制终端中显示的 URL ，同时确保已经登录 Cloudflare ，并在浏览器中粘贴这个 URL 回车，授权后终端自动运行
 
-**5.询问是否启用云端优选功能，请输入 Y（如果需要每天自动更新优选IP）**
+**5.询问是否启用云端优选功能，请输入 Y（如果需要每天自动更新优选 IP ）**
 
 **关键步骤：它会依次向您索要：**
 
-   -GitHub PAT
+   - GitHub PAT
 
-   -优选IP的子域名前缀 (例如： fast)
+   - 优选IP的子域名前缀 (例如： aura)
 
-   -Cloudflare 登录邮箱
+   - Cloudflare 登录邮箱
 
-   -Cloudflare Global API Key
+   - Cloudflare Global API Key
 
-   -主域名 Zone ID
+   -  Zone ID
 
-请依次准确输入以上信息，如果你的vps和域名是永久免费的，这样你就拥有一个永久的Aura低延迟，安全性较高的留学协议
+请依次准确输入以上信息，如果你的 VPS 和域名是永久免费的，这样你就拥有一个永久、低延迟、全自动化、安全性较高的 Aura 协议
