@@ -52,13 +52,17 @@ function install_aura() {
         exit 1
     fi
 
-    if ! unzip -o -j "${TEMP_ZIP_PATH}" "aura-server-${ARCH}" -d "$(dirname ${INSTALL_PATH})"; then
-        error "解压 Aura Server 失败。"
-        rm -f "${TEMP_ZIP_PATH}"
-        exit 1
-    fi
+    # 【已修复的代码块】
+    local TEMP_EXTRACT_PATH="/usr/local/bin/aura-server-${ARCH}"
+
+    unzip -o -j "${TEMP_ZIP_PATH}" "aura-server-${ARCH}" -d "$(dirname ${INSTALL_PATH})" >/dev/null || { error "解压 Aura Server 失败。"; rm -f "${TEMP_ZIP_PATH}"; exit 1; }
+
+    # 关键修复：将解压后的文件重命名为标准路径
+    mv "${TEMP_EXTRACT_PATH}" "${INSTALL_PATH}" || { error "重命名 Aura Server 失败。"; rm -f "${TEMP_ZIP_PATH}" "${TEMP_EXTRACT_PATH}"; exit 1; }
+
     rm -f "${TEMP_ZIP_PATH}"
-    chmod +x "${INSTALL_PATH}"
+    chmod +x "${INSTALL_PATH}" || { error "为 Aura Server 添加执行权限失败。"; exit 1; }
+
     info "Aura Server 下载、解压并安装成功。"
 
     ask "请输入你的隧道域名 (例如: aura.yourdomain.com): "; read -r DOMAIN
