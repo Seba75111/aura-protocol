@@ -89,7 +89,20 @@ EOF
     info "检查并安装 Cloudflare Tunnel 客户端 (cloudflared)..."
     if ! command -v "cloudflared" &> /dev/null; then
         LATEST_URL=$(curl -s "https://api.github.com/repos/cloudflare/cloudflared/releases/latest" | jq -r ".assets[] | select(.name | contains(\"linux-${ARCH}.deb\")) | .browser_download_url")
-        wget -qO cloudflared.deb "$LATEST_URL" && dpkg -i cloudflared.deb >/dev/null 2>&1 && rm -f cloudflared.deb
+        # 【调试模式的代码块】
+        echo -e "${YELLOW}[调试]${NC} 获取到的 Cloudflared 下载地址: ${LATEST_URL}"
+        if [ -z "$LATEST_URL" ]; then
+            error "无法从 GitHub API 获取 Cloudflared 下载地址，请检查网络。"
+            exit 1
+        fi
+
+        echo -e "${GREEN}[信息]${NC} 正在下载 Cloudflared..."
+        wget -O cloudflared.deb "$LATEST_URL" || { error "使用 wget 下载 cloudflared.deb 失败。"; exit 1; }
+
+        echo -e "${GREEN}[信息]${NC} 正在使用 dpkg 安装 Cloudflared..."
+        sudo dpkg -i cloudflared.deb || { error "使用 dpkg 安装 cloudflared.deb 失败。"; rm -f cloudflared.deb; exit 1; }
+
+        rm -f cloudflared.deb
         if ! command -v "cloudflared" &> /dev/null; then error "cloudflared 安装失败。"; exit 1; fi
     fi
 
