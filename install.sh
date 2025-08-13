@@ -67,4 +67,138 @@ tunnel: ${TUNNEL_UUID}
 credentials-file: /root/.cloudflared/${TUNNEL_UUID}.json
 ingress:
   - hostname: ${DOMAIN}
-    path: ${WS
+    path: ${WS_PATH}
+    service: http://127.0.0.1:${PORT}
+  - service: http_status:404
+EOF
+    cloudflared service install > /dev/null 2>&1; systemctl enable --now cloudflared &> /dev/null
+    cat > "$SERVICE_FILE" <<EOF
+[Unit]
+Description=Aura Protocol
+After=network.target cloudflared.service
+[Service]
+User=root
+WorkingDirectory=${CONFIG_DIR}
+ExecStart=${INSTALL_PATH}
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+EOF
+    systemctl daemon-reload; systemctl enable --now aura-server
+    info "安装成功！"; main_menu
+}
+show_node_info() {
+    if [ ! -f "$CONFIG_FILE" ]; then error "未找到 Aura Protocol 配置文件。"; return; fi
+    source "$CF_META_FILE" 2>/dev/null || true
+    DOMAIN=$(jq -r .domain "$CONFIG_FILE"); WS_PATH=$(jq -r .websocket_path "$CONFIG_FILE"); UUID=$(jq -r .uuid "$CONFIG_FILE")
+    WS_PATH_ENCODED=$(echo "$WS_PATH" | sed 's/\//%2F/g')
+    SHARE_LINK="vless://${UUID}@${DOMAIN}:443?encryption=none&security=tls&sni=${DOMAIN}&type=ws&host=${DOMAIN}&path=${WS_PATH_ENCODED}#Aura-${DOMAIN}"
+    echo -e "\n==================== Aura Protocol 节点信息 ===================="; echo -e "地址 (Address):      ${YELLOW}${DOMAIN}${NC}"; echo -e "端口 (Port):         ${YELLOW}443${NC}"; echo -e "用户ID (UUID):      ${YELLOW}${UUID}${NC}"; echo -e "路径 (Path):         ${YELLOW}${WS_PATH}${NC}"
+    echo -e "--------------------------------------------------------------"; echo -e "${GREEN}VLESS 分享链接:${NC}\n${YELLOW}${SHARE_LINK}${NC}"; echo -e "================================================================"
+    if [[ -n "$FAST_OPTIMIZE_PREFIX" && -n "$MAIN_DOMAIN" ]]; then
+        echo -e "\n===========【推荐】云端优选 IP (舰队模式) 使用提示 ==========="
+        echo -e "以下域名将由云端自动更新为最优 IP。请在客户端中将 ${YELLOW}地址 (Address)${NC} 替换为其中之一。"
+        for i in {1..5}; do echo -e "  -> ${YELLOW}${FAST_OPTIMIZE_PREFIX}${i}.${MAIN_DOMAIN}${NC}"; done
+        echo -e "保持伪装域名 (Host) 和 SNI 仍为: ${YELLOW}${DOMAIN}${NC}"; echo -e "你也可以在菜单中运行“二级火箭：本地终端制导”来自动找出当前延迟最低的 IP。"; echo -e "================================================================"
+    fi
+}
+_sync_ip_from_cloud() {
+    if [ ! -f "$CF_META_FILE" ]; then error "元数据文件丢失。"; return; fi; source "$CF_META_FILE" 2>/dev/null || true
+    if [[ -z "$FAST_OPTIMIZE_PREFIX" || -z "$MAIN_DOMAIN" ]]; then warn "未配置云端狩猎模式，无法执行。"; return; fi
+    info "正在执行二级火箭：本地终端制导..."; local PING_CMD="ping"
+    if ping -6 -c 1 -W 1 google.com &>/dev/null; then PING_CMD="ping -6"; else PING_CMD="ping"; fi
+    local FLEET_MEMBERS=5; local CANDIDATE_DOMAINS=(); for i in $(seq 1 $FLEET_MEMBERS); do CANDIDATE_DOMAINS+=("${FAST_OPTIMIZE_PREFIX}${i}.${MAIN_DOMAIN}"); done
+    info "正在对 ${#CANDIDATE_DOMAINS[@]} 个云端候选域名进行本地延迟测试..."
+    local BEST_IP=""; local BEST_DOMAIN=""; local MIN_LATENCY=99999
+    for domain in "${CANDIDATE_DOMAINS[@]}"; do
+        local ip; ip=$(dig +short "$domain" | head -n 1)
+        if [ -z "$ip" ]; then warn "无法解析 ${domain}，跳过。"; continue; fi
+        local latency; latency=$($PING_CMD -c 3 -W 1 "$ip" | tail -n 1 | awk -F'/' '{print $5}')
+        if [[ "$latency" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            info "  -> ${domain} (${ip}), 平均延迟: ${latency} ms"
+            if (( $(echo "$latency < $MIN_LATENCY" | bc -l) )); then MIN_LATENCY=$latency; BEST_IP="$ip"; BEST_DOMAIN="$domain"; fi
+        fi
+    done
+    if [ -z "$BEST_IP" ]; then error "未能找到可用的最优 IP。"; return; fi
+    echo -e "\n==================== 本地终端制导结果 ===================="; echo -e "在你的客户端中，我们推荐使用以下 IP 作为地址 (Address):"; echo -e "  -> ${GREEN}${BEST_IP}${NC} (来自 ${BEST_DOMAIN}，当前本地延迟: ${MIN_LATENCY} ms)"; echo -e "请记得保持伪装域名 (Host) 和 SNI 仍为: ${YELLOW}${DOMAIN}${NC}"; echo -e "=========================================================="
+}
+_run_optimize_ip_logic() {
+    local SILENT_MODE="$1"; mkdir -p "$OPTIMIZE_DIR"; cd "$OPTIMIZE_DIR" || { warn "进入目录失败"; return 1; }
+    ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')
+    if [[ "$SILENT_MODE" != "silent" ]]; then info "下载 CloudflareST 工具..."; fi
+    LATEST_URL=$(curl -s "https://api.github.com/repos/CrazyStrangeSue/CloudflareSpeedTest-Mirror/releases/latest" | jq -r ".assets[] | select(.name | contains(\"linux_${ARCH}\")) | .browser_download_url")
+    wget -q "$LATEST_URL" -O cfst.tar.gz; tar -zxf cfst.tar.gz; chmod +x cfst; rm cfst.tar.gz
+    if [[ "$SILENT_MODE" != "silent" ]]; then info "下载推荐IP库..."; fi; wget -q "https://raw.githubusercontent.com/ddgth/cf2dns/main/ip.txt" -O ip.txt
+    if [[ "$SILENT_MODE" != "silent" ]]; then info "开始本地优选IP..."; fi
+    ./cfst -f ip.txt -o result.csv -tl 250
+    BEST_IP=$(tail -n +2 result.csv | sort -t',' -k6nr | head -n 1 | awk -F',' '{print $1}')
+    if [ -z "$BEST_IP" ]; then warn "未能提取最佳 IP。"; cd - > /dev/null; return 1; fi
+    if [[ "$SILENT_MODE" != "silent" ]]; then info "本地优选IP: ${GREEN}${BEST_IP}${NC}"; fi
+    cd - > /dev/null
+}
+install_htop_monitoring() {
+    info "安装 htop..."; if ! command -v "htop" &> /dev/null; then apt-get install -y htop >/dev/null 2>&1 || warn "htop 安装失败。"; fi
+    info "请在 SSH 客户端中运行 'htop' 命令查看。";
+}
+setup_logrotate() {
+    touch "$OPTIMIZER_LOG_FILE"; cat > "$LOGROTATE_CONFIG_FILE" <<EOF
+${OPTIMIZER_LOG_FILE} { daily; rotate 7; size 1G; copytruncate; compress; missingok; notifempty; }
+EOF
+}
+setup_optimize_ip_cronjob() {
+    info "开始管理【本地优选】定时任务...";
+    local cron_list; cron_list=$(sudo crontab -l 2>/dev/null)
+    local script_path_for_cron; script_path_for_cron=$(realpath "$0")
+    local cron_command_signature="${script_path_for_cron} optimize_ip_cron"
+    local current_cron_entry; current_cron_entry=$(echo "$cron_list" | grep "${cron_command_signature}")
+    if [[ -n "$current_cron_entry" ]]; then
+        info "检测到已存在的定时任务:"; echo -e "${YELLOW}${current_cron_entry}${NC}"
+        ask "您想 [删除(delete)] 还是 [修改(modify)]？(d/m/N): "; read -r action
+        case "$action" in d|D) (echo "$cron_list" | grep -v "${cron_command_signature}") | sudo crontab -; rm -f "$LOGROTATE_CONFIG_FILE"; info "定时任务已删除。"; return ;; m|M) info "请重新设置。" ;; *) info "操作取消。"; return ;; esac
+    fi
+    ask "是否设置定时自动优选IP？(y/N): "; read -r confirm; if [[ ! "$confirm" =~ ^[yY]$ ]]; then info "设置已取消。"; return; fi
+    echo -e "请选择运行频率：\n  1. 每小时\n  2. 每6小时\n  3. 每12小时\n  4. 每天 (凌晨3点)"
+    ask "请输入选项 [1-4]: "; read -r freq_choice
+    local cron_schedule; case "$freq_choice" in 1) cron_schedule="0 * * * *";; 2) cron_schedule="0 */6 * * *";; 3) cron_schedule="0 */12 * * *";; 4) cron_schedule="0 3 * * *";; *) error "无效选项。";; esac
+    local cron_command="${cron_schedule} ${script_path_for_cron} optimize_ip_cron"
+    (echo "$cron_list" | grep -v "${script_path_for_cron}"; echo "${cron_command}") | sudo crontab -
+    setup_logrotate; info "定时任务已成功设置！"
+}
+optimize_ip_cron() {
+    ( flock -n 9 || { echo "Previous task is still running."; exit 1; } ; _run_optimize_ip_logic "silent"; ) >> "${OPTIMIZER_LOG_FILE}" 2>&1 9>"${OPTIMIZER_LOCK_FILE}"
+}
+uninstall_aura() {
+    warn "你确定要彻底卸载 Aura Protocol 吗？"; read -r -p "(输入 'yes' 确认): " confirm; if [[ "$confirm" != "yes" ]]; then info "操作已取消。"; return; fi
+    info "开始彻底卸载..."; systemctl stop aura-server cloudflared &>/dev/null; systemctl disable aura-server cloudflared &>/dev/null
+    if [ -f "$CF_META_FILE" ]; then
+        source "$CF_META_FILE"
+        if [ -f "${CONFIG_DIR}/hunter_credentials.conf" ]; then source "${CONFIG_DIR}/hunter_credentials.conf"; fi
+        if [[ -n "$DOMAIN" && -n "$CF_API_EMAIL" && -n "$CF_API_KEY" && -n "$CF_ZONE_ID" ]]; then
+            local record_id; record_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records?type=CNAME&name=${DOMAIN}" -H "X-Auth-Email: ${CF_API_EMAIL}" -H "X-Auth-Key: ${CF_API_KEY}" | jq -r '.result[0].id')
+            if [[ -n "$record_id" && "$record_id" != "null" ]]; then info "-> 正在删除 DNS CNAME 记录: ${DOMAIN}..."; curl -s -X DELETE "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records/${record_id}" -H "X-Auth-Email: ${CF_API_EMAIL}" -H "X-Auth-Key: ${CF_API_KEY}" > /dev/null; fi
+        fi
+        if [[ -n "$TUNNEL_UUID" ]]; then info "-> 正在删除 Cloudflare Tunnel..."; cloudflared tunnel --force delete "$TUNNEL_UUID"; fi
+    fi
+    info "-> 删除所有本地文件和目录..."; rm -f "$INSTALL_PATH" "$SERVICE_FILE" /etc/systemd/system/cloudflared.service "$LOGROTATE_CONFIG_FILE"; rm -rf "$CONFIG_DIR" "$AURA_OPERATIONS_DIR" "$TUNNEL_CONFIG_DIR" "/root/.cloudflared"
+    info "-> 清理 cron 定时任务..."; (crontab -l 2>/dev/null | grep -v "optimize_ip_cron") | crontab -
+    info "-> 清理临时文件和依赖..."; rm -f /root/install.sh /tmp/cloudflared.deb /tmp/aura-server.zip /tmp/gh.deb; apt-get purge -y gh cloudflared >/dev/null; apt-get autoremove -y >/dev/null
+    systemctl daemon-reload; info "${GREEN}Aura Protocol 已被彻底移除。${NC}"
+}
+main_menu() {
+    while true; do
+        echo -e "\n==================== Aura Protocol 管理菜单 (v${SCRIPT_VERSION}) ===================="
+        echo "1. 查看节点信息"; echo "2. 【二级火箭】本地终端制导 (云端模式)"; echo "3. 【传统模式】执行本地优选"; echo "4. 【本地优选】定时任务管理"
+        echo "5. 实时系统监控 (htop)"; echo "6. 卸载 Aura Protocol"; echo "7. 退出脚本"
+        ask "请输入选项 [1-7]: "; read -r choice
+        case $choice in
+            1) show_node_info ;; 2) _sync_ip_from_cloud ;; 3) _run_optimize_ip_logic "" ;; 4) setup_optimize_ip_cronjob ;;
+            5) install_htop_monitoring ;; 6) uninstall_aura; exit 0 ;; 7) exit 0 ;; *) error "无效选项。" ;;
+        esac; read -r -p "按任意键返回主菜单..."
+    done
+}
+main() {
+    check_root
+    if [[ "$1" == "optimize_ip_cron" ]]; then optimize_ip_cron; exit 0; fi
+    if [ -f "$CONFIG_FILE" ]; then main_menu; else install_aura; fi
+}
+main "$@"
