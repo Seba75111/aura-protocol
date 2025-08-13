@@ -169,8 +169,7 @@ optimize_ip_cron() {
 }
 uninstall_aura() {
     warn "你确定要彻底卸载 Aura Protocol 吗？"; read -r -p "(输入 'yes' 确认): " confirm; if [[ "$confirm" != "yes" ]]; then info "操作已取消。"; return; fi
-    info "开始彻底卸载...";
-    set +e
+    info "开始彻底卸载..."; set +e
     systemctl stop aura-server cloudflared &>/dev/null; systemctl disable aura-server cloudflared &>/dev/null
     if [ -f "$CF_META_FILE" ]; then
         source "$CF_META_FILE"
