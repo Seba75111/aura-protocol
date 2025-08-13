@@ -118,4 +118,10 @@ bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/
 
    -  Zone ID
 
+脚本产生的文件和对应位置：
+/etc/aura-protocol 
+/opt/aura-protocol 
+/usr/local/bin/aura-server 
+/root/.cloudflared
+
 请依次准确输入以上信息，如果你的 VPS 和域名是永久免费的，这样你就拥有一个永久、低延迟、全自动化、安全性较高的 Aura 协议
