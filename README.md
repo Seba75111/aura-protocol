@@ -86,6 +86,7 @@ Aura Protocol 是一个致力于提供**安全、高速、自动化、傻瓜式*
 ```bash
 # 下载安装脚本
 bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/main/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/main/install.sh)
 ```
 ---
 
